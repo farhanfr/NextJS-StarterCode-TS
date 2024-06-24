@@ -12,7 +12,9 @@ const HomePage = () => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <Title level={1}>Starter code NEXT.JS - TS</Title>
-      <Button type='primary' size='large' onClick={()=>signIn()}>Goto Landing Page</Button>
+      <Button type='primary' size='large' onClick={()=>{
+        router.push('/auth/login')
+      }}>Goto Landing Page</Button>
     </main>
   )
 }

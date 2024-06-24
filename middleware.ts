@@ -18,7 +18,7 @@ export default withAuth(
             const user = token.user
         } else {
             if (req.nextUrl.pathname.startsWith('/dashboard')) {
-                return NextResponse.redirect(new URL('/auth/login?callbackUrl=' + encodeURIComponent(req.url), req.url))
+                return NextResponse.redirect(new URL('/auth/login'))
             }
             return NextResponse.next()
         }
