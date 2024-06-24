@@ -41,8 +41,8 @@ const OtpPage = () => {
         redirect: false,
       })
       if (!res?.error) {
-        setLoading(false)
         router.push('/dashboard')
+        setLoading(false)
       }
       else {
         AlertError(res.error)
