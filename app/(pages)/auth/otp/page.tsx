@@ -6,7 +6,7 @@ import { AuthDataProvider, useData } from '@/app/context/AuthContext'
 import { IRequestLogin, IRequestOTP } from '@/app/models/AuthData'
 import { loginAuth } from '@/app/services/AuthService'
 import { AlertError, AlertSuccess } from '@/app/utils/extension'
-import { Button, Card, Form, Typography, Input } from 'antd'
+import { Button, Card, Form, Typography, Input, Spin } from 'antd'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
@@ -22,6 +22,8 @@ const OtpPage = () => {
     otp: ""
   })
 
+  const [loading, setLoading] = useState(false)
+
   const handleChange = (event: any) => {
     const name = event.target.name
     const value = event.target.value
@@ -29,8 +31,9 @@ const OtpPage = () => {
   }
 
   const handleSubmit = async () => {
-    let getLsOTP= localStorage.getItem('otpData');
+    let getLsOTP = localStorage.getItem('otpData');
     let getOtpData = JSON.parse(getLsOTP ?? "")
+    setLoading(true)
     try {
       const res = await signIn('credentials', {
         phonenumber: getOtpData.phonenumber,
@@ -38,32 +41,35 @@ const OtpPage = () => {
         redirect: false,
       })
       if (!res?.error) {
+        setLoading(false)
         router.push('/dashboard')
       }
       else {
         AlertError(res.error)
         console.log(res)
+        setLoading(false)
       }
     } catch (error) {
       console.log(error)
+      setLoading(false)
     }
   }
 
-  const handleResendOTP = async() =>{
-    let getLsOTP= localStorage.getItem('otpData');
+  const handleResendOTP = async () => {
+    let getLsOTP = localStorage.getItem('otpData');
     let getOtpData = JSON.parse(getLsOTP ?? "")
-    console.log("=>" , getOtpData) 
-    const otpDataSend:IRequestLogin = {
-        phonenumber: getOtpData.phonenumber,
-        password: getOtpData.password,
+    console.log("=>", getOtpData)
+    const otpDataSend: IRequestLogin = {
+      phonenumber: getOtpData.phonenumber,
+      password: getOtpData.password,
     }
-    loginAuth(otpDataSend).then((val)=>{
-        AlertSuccess("OTP successfully send")
-    }).catch((err)=>{
-        AlertError(err.message)
-        // console.log(err)
+    loginAuth(otpDataSend).then((val) => {
+      AlertSuccess("OTP successfully send")
+    }).catch((err) => {
+      AlertError(err.message)
+      // console.log(err)
     })
-}
+  }
 
   return (
 
@@ -82,7 +88,7 @@ const OtpPage = () => {
           // onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
           autoComplete="off">
-        
+
           <Form.Item
             label="Otp"
             name="otp"
@@ -91,17 +97,21 @@ const OtpPage = () => {
             <Input name='otp' onChange={handleChange} />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Submit OTP
-            </Button>
+            {
+              loading ?
+                <Spin /> :
+                <Button type="primary" htmlType="submit">
+                  Submit OTP
+                </Button>
+            }
           </Form.Item>
         </Form>
 
         <center>
-        <CustomTimer minutes={0} seconds={59} resend={()=>{
-          handleResendOTP()
-         }}/>
-         </center>
+          <CustomTimer minutes={0} seconds={59} resend={() => {
+            handleResendOTP()
+          }} />
+        </center>
 
       </Card>
     </main>
