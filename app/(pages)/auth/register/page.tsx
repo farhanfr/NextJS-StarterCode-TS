@@ -1,6 +1,7 @@
 "use client"
 
-import { IRequestRegister, registerAuth } from '@/app/services/AuthService'
+import { IRequestRegister } from '@/app/models/AuthData'
+import {  registerAuth } from '@/app/services/AuthService'
 import { AlertError, AlertSuccess } from '@/app/utils/extension'
 import { Button, Card, Divider, Form, Input, Spin, Typography } from 'antd'
 import { useRouter } from 'next/navigation'
