@@ -42,7 +42,7 @@ const OtpPage = () => {
       })
       if (!res?.error) {
         router.push('/dashboard')
-        setLoading(false)
+        // setLoading(false)
       }
       else {
         AlertError(res.error)
